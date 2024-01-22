@@ -3,6 +3,100 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const { SerialPort } = require('serialport');
+const { ReadlineParser } = require('@serialport/parser-readline')
+let WebSocket = require('ws');
+let WebSocketServer = WebSocket.Server;
+
+
+var port = null;
+
+port = new SerialPort( {
+  path: '/dev/ttyACM0',
+  baudRate: 9600,
+  baudRate:9600, dataBits:8,
+  parity:'none', stopBits:1, flowControl:false,
+} );
+
+port.on('open', function () {
+  /*port.write('message', function(err) {
+      if(err){
+          return console.error(err.message);
+      }
+  })*/
+  
+});
+
+const parser = port.pipe(new ReadlineParser({ delimiter: '\n' }))
+
+parser.on( 'data', data => {
+    console.log('received');
+    console.log(data);
+    sendToSerial(data);
+} );
+
+
+// This function broadcasts messages to all webSocket clients
+function broadcast(data) {
+    for (myConnection in connections) {   // iterate over the array of connections
+      connections[myConnection].send(data); // send the data to each connection
+    }
+  }
+
+function readSerialData(data) {
+    console.log(data);
+    // if there are webSocket connections, send the serial data
+    // to all of them:
+    if (connections.length > 0) {
+      broadcast(data);
+    }
+}
+
+// Etablir le port pour le websocket
+const SERVER_PORT = 8083;
+let connections = new Array;  // Liste de connections au websocket
+let wss = new WebSocketServer({port: SERVER_PORT}); // Le serveur webSocket
+
+wss.on('listening', () => {
+  console.log(`WebSocket server is listening on port ${SERVER_PORT}`);
+});
+
+wss.on('error', (error) => {
+    console.error('WebSocket server error:', error);
+});
+
+wss.on('connection', handleConnection);
+
+function handleConnection(client) {
+    console.log("New Connection"); // Nouvelle connection établie
+
+    connections.push(client); // Ajouter a la communication de l'array
+  
+    client.on('message', sendToSerial); // Quand un client envoie un message, envoier au serial
+  
+    client.on('close', function() { // Quand le client ferme sa connectionwhen a client closes its connection
+      console.log("connection closed");
+      let position = connections.indexOf(client); // Obtenir la position du client dans l'array
+      connections.splice(position, 1); // Et le supprimer
+    });
+}
+
+/**
+ * Envoyer un message au serial
+ * @param {*} data 
+ */
+function sendToSerial(data) {
+    console.log("sending to serial: " + data);
+    //port.write(data);
+    
+    // Envoyer message aux clients
+    connections.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {console.log('senddd', data);
+        client.send(data);
+      }
+    });
+
+}
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');

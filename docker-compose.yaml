@@ -4,21 +4,26 @@ services:
     image: node:20
     container_name: tp3_solution_iot
     working_dir: /app
+    privileged: true
+    devices:
+      - "/dev/ttyACM0:/dev/ttyACM0"
     volumes:
       - .:/app
+      - /dev/ttyACM0:/dev/ttyACM0
     ports:
       - "3000:3000"
+      - "8083:8083"
     command: bash -c "npm install && npm start"
   
     depends_on:
       - mongo
     environment:
-      DATABASE_URL: "mongodb://root:example@mongo:27017/"
+      DATABASE_URL: "mongodb://root:example@mongo:4500/"
   mongo:
     image: mongo:latest
     container_name: mongo
     ports:
-      - "27017:27017"
+      - "4500:4500"
     volumes:
       - ./data:/data/db
     environment:
