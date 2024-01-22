@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+  web:
+    image: node:20
+    container_name: tp3_solution_iot
+    working_dir: /app
+    volumes:
+      - .:/app
+    ports:
+      - "3000:3000"
+    command: bash -c "npm install && npm start"
+  
+    depends_on:
+      - mongo
+    environment:
+      DATABASE_URL: "mongodb://root:example@mongo:27017/"
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
