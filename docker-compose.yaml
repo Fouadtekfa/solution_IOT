@@ -9,7 +9,6 @@ services:
       - "/dev/ttyACM0:/dev/ttyACM0"
     volumes:
       - .:/app
-      - /dev/ttyACM0:/dev/ttyACM0
     ports:
       - "3000:3000"
       - "8083:8083"
