@@ -17,12 +17,12 @@ services:
     depends_on:
       - mongo
     environment:
-      DATABASE_URL: "mongodb://root:example@mongo:4500/"
+      DATABASE_URL: "mongodb://root:example@mongo:27017/"
   mongo:
     image: mongo:latest
     container_name: mongo
     ports:
-      - "4500:4500"
+      - "27017:27017"
     volumes:
       - ./data:/data/db
     environment:

@@ -3,13 +3,32 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var mongoose = require ('mongoose');
+require("dotenv").config();
 const { SerialPort } = require('serialport');
 const { ReadlineParser } = require('@serialport/parser-readline')
 let WebSocket = require('ws');
 let WebSocketServer = WebSocket.Server;
 
-
 var port = null;
+
+(async () => {
+  try {
+    // Connexion à la base de données MongoDB
+    await mongoose.connect(process.env.MDB, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+
+    // Si la connexion réussit
+    console.log('Connexion à MongoDB réussie');
+  } catch (error) {
+    // En cas d'échec de connexion
+    console.error('Erreur de connexion à MongoDB :', error.message);
+    //lever une exception
+    throw new Error('Impossible de se connecter à la base de données MongoDB', error);
+  }
+})();
 
 port = new SerialPort( {
   path: '/dev/ttyACM0',
