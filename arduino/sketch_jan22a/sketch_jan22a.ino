@@ -5,6 +5,7 @@ Servo myservo;  // Créez un objet servo pour contrôler le HS-311
 int pos = 0;    // Variable pour stocker la position du servo
 int servoPin = 9;   // La broche où votre servo est connecté
 volatile bool mIsClicked = false;
+volatile bool open = true;
 
 
 bool a = false;
@@ -19,7 +20,19 @@ void setup() {
 
 // Cette fonction boucle indéfiniment après le démarrage
 void loop() {
-
+  int donneesALire = Serial.available();
+    if(donneesALire > 0) // si le buffer n'est pas vide
+    {
+      int recv = Serial.read();
+      if( recv == 102 ) {
+        open = false;
+      } else if( recv == 111 ) {
+        open = true;
+      }
+        Serial.println("Read");
+        Serial.println(recv);
+        // Il y a des données, on les lit et on fait du traitement
+    }
 
   if( mIsClicked ) {
    Serial.println("1");
@@ -37,5 +50,8 @@ void loop() {
 }
 
 void click() {
-    mIsClicked = true;
+  if( open ) {
+      mIsClicked = true;
+  }
+    
 }
