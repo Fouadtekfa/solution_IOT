@@ -22,7 +22,7 @@ void loop() {
 
 
   if( mIsClicked ) {
-   Serial.println("Click");
+   Serial.println("1");
    mIsClicked = false;
     //myservo.write(160);
     //delay( 2500 );

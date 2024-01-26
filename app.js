@@ -9,11 +9,13 @@ const { SerialPort } = require('serialport');
 const { ReadlineParser } = require('@serialport/parser-readline')
 let WebSocket = require('ws');
 let WebSocketServer = WebSocket.Server;
+const Door = require('./models/Door');
 
 var port = null;
 
 (async () => {
   try {
+    console.log(process.env.MDB)
     // Connexion à la base de données MongoDB
     await mongoose.connect(process.env.MDB, {
       useNewUrlParser: true,
@@ -22,6 +24,7 @@ var port = null;
 
     // Si la connexion réussit
     console.log('Connexion à MongoDB réussie');
+
   } catch (error) {
     // En cas d'échec de connexion
     console.error('Erreur de connexion à MongoDB :', error.message);
@@ -51,14 +54,14 @@ const parser = port.pipe(new ReadlineParser({ delimiter: '\n' }))
 parser.on( 'data', data => {
     console.log('received');
     console.log(data);
-    sendToSerial(data);
+    sendToClient(data);
 } );
 
 
 // This function broadcasts messages to all webSocket clients
 function broadcast(data) {
     for (myConnection in connections) {   // iterate over the array of connections
-      connections[myConnection].send(data); // send the data to each connection
+      connections[ myConnection ].send(data); // send the data to each connection
     }
   }
 
@@ -91,7 +94,7 @@ function handleConnection(client) {
 
     connections.push(client); // Ajouter a la communication de l'array
   
-    client.on('message', sendToSerial); // Quand un client envoie un message, envoier au serial
+    client.on('message', sendToClient); // Quand un client envoie un message, envoier au serial
   
     client.on('close', function() { // Quand le client ferme sa connectionwhen a client closes its connection
       console.log("connection closed");
@@ -104,10 +107,10 @@ function handleConnection(client) {
  * Envoyer un message au serial
  * @param {*} data 
  */
-function sendToSerial(data) {
+function sendToClient(data) {
     console.log("sending to serial: " + data);
     //port.write(data);
-    
+    saveInDoorsCollection( data );
     // Envoyer message aux clients
     connections.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {console.log('senddd', data);
@@ -115,6 +118,17 @@ function sendToSerial(data) {
       }
     });
 
+}
+
+function saveInDoorsCollection( data ) {
+  const newData = new Door({ id_door: parseInt(data), enter: true, date: new Date().toISOString() });
+    newData.save()
+    .then(() => {
+      console.log('Données enregistrées avec succès dans la base de données.');
+    })
+    .catch((error) => {
+      console.error('Erreur lors de l\'enregistrement des données dans la base de données :', error);
+    });
 }
 
 var indexRouter = require('./routes/index');
