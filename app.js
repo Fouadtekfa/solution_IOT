@@ -42,7 +42,6 @@ port = new SerialPort( {
 } );
 
 port.on('open', function () {
-  console.log('open!!!')
   setTimeout(() => {
     port.write('message', function(err) {
         if(err){
@@ -55,27 +54,8 @@ port.on('open', function () {
 const parser = port.pipe(new ReadlineParser({ delimiter: '\n' }))
 
 parser.on( 'data', data => {
-    console.log('received');
-    console.log(data);
     sendToClient(data);
 } );
-
-
-// This function broadcasts messages to all webSocket clients
-function broadcast(data) {
-    for (myConnection in connections) {   // iterate over the array of connections
-      connections[ myConnection ].send(data); // send the data to each connection
-    }
-  }
-
-function readSerialData(data) {
-    console.log(data);
-    // if there are webSocket connections, send the serial data
-    // to all of them:
-    if (connections.length > 0) {
-      broadcast(data);
-    }
-}
 
 // Etablir le port pour le websocket
 const SERVER_PORT = 8083;
@@ -93,14 +73,11 @@ wss.on('error', (error) => {
 wss.on('connection', handleConnection);
 
 function handleConnection(client) {
-    console.log("New Connection"); // Nouvelle connection établie
-
     connections.push(client); // Ajouter a la communication de l'array
   
-    client.on('message', sendToClient); // Quand un client envoie un message, envoier au serial
+    client.on('message', sendToSerial); // Quand un client envoie un message, envoier au serial
   
     client.on('close', function() { // Quand le client ferme sa connectionwhen a client closes its connection
-      console.log("connection closed");
       let position = connections.indexOf(client); // Obtenir la position du client dans l'array
       connections.splice(position, 1); // Et le supprimer
     });
@@ -112,19 +89,26 @@ function handleConnection(client) {
  */
 function sendToClient(data) {
     console.log("sending to serial: " + data);
-    //port.write(data);
     saveInDoorsCollection( data );
     // Envoyer message aux clients
     connections.forEach((client) => {
-      if (client.readyState === WebSocket.OPEN) {console.log('senddd', data);
+      if (client.readyState === WebSocket.OPEN) {
         client.send(data);
       }
     });
 
 }
 
+/**
+ * Envoyer un message au serial pour Arduino
+ * @param {*} data
+ */
+function sendToSerial( data ) {
+  port.write(data.toString());
+}
+
 function saveInDoorsCollection( data ) {
-  const newData = new Door({ id_door: parseInt(data), enter: true, date: new Date().toISOString() });
+  const newData = new Door({ id_door:   (data), enter: true, date: new Date().toISOString() });
     newData.save()
     .then(() => {
       console.log('Données enregistrées avec succès dans la base de données.');

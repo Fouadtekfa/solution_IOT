@@ -29,8 +29,6 @@ void loop() {
       } else if( recv == 111 ) {
         open = true;
       }
-        Serial.println("Read");
-        Serial.println(recv);
         // Il y a des données, on les lit et on fait du traitement
     }
 

@@ -24,10 +24,19 @@ function showData(result) {
 }
 
 function fermer() {
+    if (socket.readyState === WebSocket.OPEN) {
+        socket.send('f');
+    } else {
+        console.error('La connexion WebSocket n\'est pas ouverte.');
+    }
 }
 
 function ouvrir() {
-    
+    if (socket.readyState === WebSocket.OPEN) {
+        socket.send('o');
+    } else {
+        console.error('La connexion WebSocket n\'est pas ouverte.');
+    }
 }
 
 setup();
