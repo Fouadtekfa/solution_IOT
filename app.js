@@ -10,6 +10,7 @@ const { ReadlineParser } = require('@serialport/parser-readline')
 let WebSocket = require('ws');
 let WebSocketServer = WebSocket.Server;
 const Door = require('./models/Door');
+const moment = require('moment');
 
 var port = null;
 
@@ -104,11 +105,13 @@ function sendToClient(data) {
  * @param {*} data
  */
 function sendToSerial( data ) {
+  console.log('send!', data.toString());
   port.write(data.toString());
 }
 
 function saveInDoorsCollection( data ) {
-  const newData = new Door({ id_door:   (data), enter: true, date: new Date().toISOString() });
+  let date = moment();//.subtract('4', 'day');
+  const newData = new Door({ id_door:   (data), enter: true, date: date.toISOString() });
     newData.save()
     .then(() => {
       console.log('Données enregistrées avec succès dans la base de données.');

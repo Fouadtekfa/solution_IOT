@@ -1,5 +1,7 @@
 #include <Servo.h>
 #define SWITCH_PIN 3
+const int relayPin = 13;
+
 Servo myservo;  // Créez un objet servo pour contrôler le HS-311
 
 int pos = 0;    // Variable pour stocker la position du servo
@@ -15,6 +17,8 @@ void setup() {
    attachInterrupt(digitalPinToInterrupt( SWITCH_PIN ), click, RISING );
  pinMode( SWITCH_PIN, INPUT );
   myservo.attach(servoPin);  // Attachez le servo à la bonne broche sur l'Arduino
+  pinMode(relayPin, OUTPUT);
+  digitalWrite(relayPin, HIGH);
  // pinMode(buttonPin, INPUT_PULLUP);  // Configurez la broche du bouton comme entrée avec résistance pull-up
 }
 
@@ -26,8 +30,10 @@ void loop() {
       int recv = Serial.read();
       if( recv == 102 ) {
         open = false;
+          digitalWrite(relayPin, LOW);
       } else if( recv == 111 ) {
         open = true;
+        digitalWrite(relayPin, HIGH);
       }
         // Il y a des données, on les lit et on fait du traitement
     }
@@ -44,7 +50,7 @@ void loop() {
     myservo.write(90);  // Dites au servo d'aller à la position 'pos'
 
   }
-  delay(250);
+  delay(1000);
 }
 
 void click() {
