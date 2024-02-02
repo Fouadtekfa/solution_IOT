@@ -44,7 +44,7 @@ void loop() {
     myservo.write(90);  // Dites au servo d'aller à la position 'pos'
 
   }
-  delay(2500);
+  delay(250);
 }
 
 void click() {

@@ -24,7 +24,17 @@ html
         #boutonsActions
             button(type='button', onclick='fermer()') Fermer les portes
             button(type='button', onclick='ouvrir()') Ouvrir les portes
-        #graph
-          h2 Historique
+        
 
+        h2.historique Historique:
+        #graph  
+        script.
+          var donneesGraphique = !{JSON.stringify(donnees)};
+          
+          
+          
+      script(src="https://d3js.org/d3.v6.min.js")
+        
+          
+      script(src='/js/d3-visualisation.js')
       script(src='/js/index.js')

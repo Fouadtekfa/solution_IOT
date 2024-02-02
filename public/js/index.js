@@ -25,6 +25,7 @@ function showData(result) {
 
 function fermer() {
     if (socket.readyState === WebSocket.OPEN) {
+        alert('ferme');
         socket.send('f');
     } else {
         console.error('La connexion WebSocket n\'est pas ouverte.');
@@ -39,4 +40,7 @@ function ouvrir() {
     }
 }
 
+
+
 setup();
+
