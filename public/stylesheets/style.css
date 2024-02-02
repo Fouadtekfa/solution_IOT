@@ -1,8 +1,76 @@
 body {
-  padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 a {
   color: #00B7FF;
+}
+
+#navPage {
+  height: 250px;
+  width: 100%;
+  background-color: rgba(204, 204, 204, 0.329);
+  display: inline-flex;
+  justify-content: space-between;
+}
+
+#arduinoImage {
+  width: 14%;
+  margin-right: 50px;
+  margin-top: 20px;
+}
+
+#arduinoImage img {
+  width: 100%;
+}
+
+#titleNav {
+  padding-left: 50px;
+  width: 100%;
+}
+
+.imageUniversite img{
+  width: 100%;
+}
+
+.imageUniversite{
+  width: 20%;
+  margin-top: 30px;
+}
+
+.presentContainer {
+  display: inline-flex;
+  width: 100%;
+}
+
+.namesContainer {
+  margin-left: 20px;
+  display: block;
+  margin: 0 auto;
+  text-align: center;
+
+}
+
+#contentPage {
+  width: 100%;
+  background: rgba(106, 124, 139, 0.219);
+  min-height: 50vh;
+}
+
+#boutonsActions {
+  width: 100%;
+  text-align: center;
+}
+
+#boutonsActions button {
+  padding: 20px;
+  border-radius: 10px;
+  background: #a2c2ed;
+  margin: 20px;
+  cursor: pointer;
+}
+
+#boutonsActions button:hover {
+  background: #6384b3;
+  transition: all .5s ease;
 }

@@ -1,6 +1,30 @@
 extends layout
 
-block content
-  h1= title
-  p Welcome tooo #{title}
-  script(src='/js/index.js')
+
+html
+  head
+    title Mon Document
+    block styles
+      link(rel='stylesheet', href='style.css')
+  body
+    block content
+      #navPage.col
+          #titleNav
+            div.presentContainer
+              div.imageUniversite
+                img(src='/images/LH.webp', alt='ULH')
+              div.namesContainer
+                h1 Internet des objets
+                h2 Programe arduino pour l'ouverture des portes d'un bâtiment
+                p Andoni ALONSO TORT 
+                P Fouad TEKFA
+          #arduinoImage
+            img(src='/images/arduino.png', alt='Arduino' width='30%')
+      #contentPage
+        #boutonsActions
+            button(type='button', onclick='fermer()') Fermer les portes
+            button(type='button', onclick='ouvrir()') Ouvrir les portes
+        #graph
+          h2 Historique
+
+      script(src='/js/index.js')

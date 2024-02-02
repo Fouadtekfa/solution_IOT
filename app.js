@@ -25,6 +25,7 @@ var port = null;
     // Si la connexion réussit
     console.log('Connexion à MongoDB réussie');
 
+
   } catch (error) {
     // En cas d'échec de connexion
     console.error('Erreur de connexion à MongoDB :', error.message);
@@ -41,12 +42,14 @@ port = new SerialPort( {
 } );
 
 port.on('open', function () {
-  /*port.write('message', function(err) {
-      if(err){
-          return console.error(err.message);
-      }
-  })*/
-  
+  console.log('open!!!')
+  setTimeout(() => {
+    port.write('message', function(err) {
+        if(err){
+            return console.error(err.message);
+        }
+    })
+  }, 10000 );
 });
 
 const parser = port.pipe(new ReadlineParser({ delimiter: '\n' }))

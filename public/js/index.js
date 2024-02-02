@@ -1,5 +1,4 @@
 const socket = new WebSocket('ws://localhost:8083/');
-
 /**
  * Initialiser fonctions pour websocket.
  */
@@ -21,7 +20,14 @@ function openSocket() {
  * Afficher données avec le message
  * @param {*} result: Message envoyé par le serveur 
  */
-function showData(result) {console.log('reading', result.data);
+function showData(result) {
+}
+
+function fermer() {
+}
+
+function ouvrir() {
+    
 }
 
 setup();
