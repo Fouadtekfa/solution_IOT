@@ -5,6 +5,17 @@
 - Fouad TEKFA 
 - Andoni ALONSO TORT
 
+## Fonctionnement du projet
+
+Avant de lancer le projet ne pas oublier executer d'abord le code arduino. Pour le branchement on a utilisé le schéma suivant :
+
+Faire attention de brancher l'arduino dans son port ttyACM0 pour la communication avec le serveur.
+
+![branchement](./images/schema.png)
+
+Le fonctionnement du projet est representé dans l'image ci-dessous :
+
+![details](./images/details.png)
 
 ## Lancement du Projet :
 
@@ -30,3 +41,5 @@ Pour arrêter et supprimer les conteneurs Docker créés par Docker Compose, ex�
 ```shell
 docker compose down
 ```
+
+
